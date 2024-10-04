@@ -1,9 +1,9 @@
 # Callflow
 ## set_variables
-Cấu hình | Type | Default | Description
---- | --- | --- | ---
-custom_application_vars | Object | {} | Danh sách các biến cần được set thêm vào Call
-overwrite_existing | Boolean | true | Nếu Call đã có biến được khai báo ở `custom_application_vars` thì có set đè giá trị vào hay không
+| Cấu hình                | Type    | Default | Description                                                                                       |
+| ----------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------- |
+| custom_application_vars | Object  | {}      | Danh sách các biến cần được set thêm vào Call                                                     |
+| overwrite_existing      | Boolean | true    | Nếu Call đã có biến được khai báo ở `custom_application_vars` thì có set đè giá trị vào hay không |
 
 ```json
 {

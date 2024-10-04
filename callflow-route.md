@@ -23,18 +23,18 @@
 ### callflow_route
 ```json
 {
-    "Old-Callflow-Route-ID": "1727799112345-b41fee8c",
-    "Callflow-Route-Source": {
-        "type": "auto_transfer",
-        "auto_transfer_from": "30000"
-    },
-    "Unix-Time-Ms": 1727799112449,
-    "Request": "10000@10.10.10.1",
-    "Callflow-Route-ID": "1727799112449-c746d70c",
-    "Call-ID": "zYV~y2vH5k",
-    "Account-ID": "e7339ac33c3b5027922fde17b88eb772",
-    "Event-Name": "callflow_route",
-    "Event-Category": "notification",
+    "Old-Callflow-Route-ID": "1727799112345-b41fee8c",
+    "Callflow-Route-Source": {
+	    "type": "auto_transfer",
+        "auto_transfer_from": "30000"
+    },
+    "Unix-Time-Ms": 1727799112449,
+    "Request": "10000@10.10.10.1",
+    "Callflow-Route-ID": "1727799112449-c746d70c",
+    "Call-ID": "zYV~y2vH5k",
+    "Account-ID": "e7339ac33c3b5027922fde17b88eb772",
+    "Event-Name": "callflow_route",
+    "Event-Category": "notification"
 }
 ```
 
@@ -69,16 +69,16 @@ Các loại của Callflow Route Source:
 Setup: Cuộc gọi từ zone IVR qua ACD cần có CSH như dưới
 ```json
 {
-    "children": {},
-    "data": {
-        "use_local_resources": true,
-        "to_did": "10000",
-        "custom_sip_headers": {
-            "P-IVR-Call-ID": "{sip_call_id}",
-            "P-IVR-Call-Request": "{sip_req_user}"
-        }
-    },
-    "module": "resources"
+	"children": {},
+	"data": {
+		"use_local_resources": true,
+		"to_did": "10000",
+		"custom_sip_headers": {
+			"P-IVR-Call-ID": "{sip_call_id}",
+			"P-IVR-Call-Request": "{sip_req_user}"
+		}
+	},
+	"module": "resources"
 }
 ```
 
@@ -127,15 +127,15 @@ curl -v -X POST \
 Setup: callflow thực hiện auto_transfer tới target 10000, có thể set custom_application_vars ngay tại module `transfer` (nên có thể không cần cho qua `set_variables` trước nó) 
 ```json
 {
-    "data": {
-        "target": "10000",
-        "transfer_type": "blind",
-        "reason": "auto_transfer",
-        "custom_application_vars": {
-            "auto_transfer_from": "30000"
-        }
-    },
-    "module": "transfer"
+          "data": {
+                    "target": "10000",
+                    "transfer_type": "blind",
+                    "reason": "auto_transfer",
+                    "custom_application_vars": {
+                              "auto_transfer_from": "30000"
+                    }
+          },
+          "module": "transfer"
 }
 ```
 
@@ -173,14 +173,14 @@ curl --location 'http://{API_SERVER}/v2/accounts/{ACCOUNT_ID}/channels/{CHANNEL_
 --header 'Content-Type: application/json' \
 --header 'X-Auth-Token: ${AUTH_TOKEN}' \
 --data '{
-    "data": {
-        "action": "blind_transfer",
-        "target": "20000",
-        "reason": "bot_transfer",
-        "custom_application_vars": {
-            "cac_bien_do_bot_set" : ""
-        }
-    }
+          "data": {
+                    "action": "blind_transfer",
+                    "target": "20000",
+                    "reason": "bot_transfer",
+                    "custom_application_vars": {
+                              "cac_bien_do_bot_set" : ""
+                    }
+          }
 }'
 ```
 
@@ -190,21 +190,37 @@ Callflow route khi cuộc gọi tới đầu số 20000 sẽ được ghi nhận
 Cuộc gọi timeout ở queue và chuyển tới đầu số đích, ví dụ 10000
 ```json
 {
-    "data": {
-        "target": "10000",
-        "transfer_type": "blind",
-        "reason": "queue_timeout",
-        "custom_application_vars": {
-        }
-    },
-    "module": "transfer"
+          "data": {
+                    "target": "10000",
+                    "transfer_type": "blind",
+                    "reason": "queue_timeout",
+                    "custom_application_vars": {
+                    }
+          },
+          "module": "transfer"
 }
 ```
 #### Callflow-Route-Source: agent_transfer
-agent tranfer cuộc gọi vào đầu số IVR hoặc ACD khác, thực hiện gọi Channel api với:
+agent tranfer cuộc gọi vào đầu số IVR hoặc ACD khác, qua channel api với:
 * target: đầu số ivr hoặc acd đích
-* reason: agent_transfer
-(tương tự bot_transfer)
+* reason: `agent_transfer`
+
+Ví dụ, transfer tới ACD và có thêm đánh dấu là transfer_hot qua field `member_flags` 
+```shell
+curl --location 'http://{API_SERVER}/v2/accounts/{ACCOUNT_ID}/channels/{CHANNEL_ID}' \
+--header 'Content-Type: application/json' \
+--header 'X-Auth-Token: ${AUTH_TOKEN}' \
+--data '{
+	"data": {
+		"target": "20000",
+		"action": "blind_transfer",
+		"reason": "agent_transfer",
+		"custom_application_vars": {
+			"member_flags" : "transfer_hot",
+		}
+	}
+}'
+```
 
 ## Ví dụ cuộc gọi có một route & trong route này có tới queue
 
