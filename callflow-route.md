@@ -124,6 +124,7 @@ curl -v -X POST \
 | type=auto_transfer   | String |                                                 |
 | auto_transfer_from   | String | Id của đối tượng thực hiện auto_transfer        |
 | voice_channel_number | String | vc number của đối tượng thực hiện auto_transfer |
+|                      |        |                                                 |
 Setup: callflow thực hiện auto_transfer tới target 10000, có thể set custom_application_vars ngay tại module `transfer` (nên có thể không cần cho qua `set_variables` trước nó) 
 ```json
 {

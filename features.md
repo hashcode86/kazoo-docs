@@ -36,19 +36,19 @@
 # Queue Features
 ## Queue setting
 
-Cấu hình | Type | Default | Description
---- | --- | --- | ---
-voice_channel_number | String | null | đầu số của nhóm queue chứa queue hiện tại
-moh_list | List | null | danh sách nhạc chờ trong queue
-moh_strategy | String | null | "sequential", "random"
-distribution_delay | Integer | 0 | Đặt giá trị, ví dụ 10 nếu yêu cầu khách hàng nghe nhạc chờ (truyền thông) tối thiểu 10s trước khi phân phối tới agent
-hold_medias | List | [] | Nếu hold_medias là null hoặc [] thì sẽ sử dụng âm hold máy theo setting của account/user/device
-hold_medias_strategy | String | "random" | Hoặc "sequential" nếu muốn âm hold máy được play theo thứ tự
-last_called_agent_routing | Boolean | false | Tắt / bật  phân phối tới last agent
-record_extension | String | "mp3" | "mp4" - ghi hình
-record_stereo | Boolean | false | Tắt / bật  ghi âm đa kênh
-delay_200_ok | Boolean | false | Đặt bằng true nếu cần cuộc gọi vào queue, gặp agent mới tính cước viễn thông của khách hàng. Queue callback cũng cần đặt `true` để khi agent nhấc máy mới call tới khách hàng qua click2call api
-secondary_agents | List | [] | Cấu hình danh sách các agent có skill thấp hơn, và cũng là ưu tiên thấp hơn khi nhận cuộc gọi (2 mức skill). Agent phải được gán vào queue thì cấu hình agent đó ở danh sách này mới có ý nghĩa.
+| Cấu hình                  | Type    | Default  | Description                                                                                                                                                                                      |
+| ------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| voice_channel_number      | String  | null     | đầu số của nhóm queue chứa queue hiện tại                                                                                                                                                        |
+| moh_list                  | List    | null     | danh sách nhạc chờ trong queue                                                                                                                                                                   |
+| moh_strategy              | String  | null     | "sequential", "random"                                                                                                                                                                           |
+| distribution_delay        | Integer | 0        | Đặt giá trị, ví dụ 10 nếu yêu cầu khách hàng nghe nhạc chờ (truyền thông) tối thiểu 10s trước khi phân phối tới agent                                                                            |
+| hold_medias               | List    | []       | Nếu hold_medias là null hoặc [] thì sẽ sử dụng âm hold máy theo setting của account/user/device                                                                                                  |
+| hold_medias_strategy      | String  | "random" | Hoặc "sequential" nếu muốn âm hold máy được play theo thứ tự                                                                                                                                     |
+| last_called_agent_routing | Boolean | false    | Tắt / bật  phân phối tới last agent                                                                                                                                                              |
+| record_extension          | String  | "mp3"    | "mp4" - ghi hình                                                                                                                                                                                 |
+| record_stereo             | Boolean | false    | Tắt / bật  ghi âm đa kênh                                                                                                                                                                        |
+| delay_200_ok              | Boolean | false    | Đặt bằng true nếu cần cuộc gọi vào queue, gặp agent mới tính cước viễn thông của khách hàng. Queue callback cũng cần đặt `true` để khi agent nhấc máy mới call tới khách hàng qua click2call api |
+| secondary_agents          | List    | []       | Cấu hình danh sách các agent có skill thấp hơn, và cũng là ưu tiên thấp hơn khi nhận cuộc gọi (2 mức skill). Agent phải được gán vào queue thì cấu hình agent đó ở danh sách này mới có ý nghĩa. |
 
 ## Tràn Queue
 ### Mô tả
@@ -171,95 +171,6 @@ Note: Khi cuộc gọi đã tới được queue (`cf_acdc_member`), thì variab
     "App-Name":"acdc"
 }
 ```
-
-### Được chuyển đến do transfer
-* Yêu cầu:
-  * Đầu số của nhóm queue (kênh) cần set cho tất cả các queue trong nhóm, field: `voice_channel_number`
-  * Cuộc gọi được chuyển đến nhóm queue qua 2 cách là module transfer hoặc api blind_transfer, với target là đầu số của nhóm queue
-
-
-* Cuộc gọi của khác hàng khi tới một queue thì có thể đến từ `ivr`, `auto_transfer`, `agent_transfer` hoặc `bot_transfer`
-* **agent_transfer** là khi cuộc gọi đã được một agent trả lời ở src_queue, sau đó agent thực hiện transfer tới đầu số nhóm queue hiện tại
-* **bot_transfer** là khi cuộc gọi của khách hàng trước đã vào bot (do src_queue cấu hình vào bot), và bot transfer tới đầu số nhóm queue hiện tại
-* **auto_transfer** là khi cuộc gọi của khách hàng muốn vào src_queue, nhưng src_queue cấu hình auto_transfer tới đầu số nhóm queue hiện tại
-
-#### agent_transfer
-Agent trả lời cuộc gọi, sau đó transfer tới một kênh khác (ví dụ 20000) thì khi cuộc gọi tới kênh mới và vào một queue của kênh này thì bản tin acdc_stats.call_waiting sẽ có:
-* **Source-Type**: agent_transfer
-* **Source-ID**: id của queue ban đầu
-
-#### auto_transfer
-Cuộc gọi khi auto_transfer tới một nhóm queue đích (ví dụ 20000) thì cần được settting như sau:
-```json
-{
-    "data": {
-        "custom_application_vars": {
-            "auto_transfer_from": "ID_SRC_QUEUE_HERE"
-        }
-    },
-    "module": "set_variables",
-    "children": {
-        "_": {
-            "data": {
-                "transfer_type": "blind",
-                "target": "20000"
-            },
-            "module": "transfer"
-        }
-    }
-}
-```
-* `auto_transfer_from`: đặt là giá trị id queue gốc, thể hiện cuộc gọi đang được auto_transfer từ queue nào
-* `target`: Đầu số nhóm queue sẽ chuyển tới
-
-Khi cuộc gọi tới kênh 20000 và vào một queue của kênh này thì bản tin acdc_stats.call_waiting sẽ có:
-* **Source-Type**: auto_transfer
-* **Source-ID**: id của queue gốc thực hiện auto_transfer đi
-
-### Chuyển cuộc gọi đến Callbot & nhận lại từ callbot
-Khi cuộc gọi vào một queue nhưng queue này có cấu hình chuyển bot thì flow cho việc chuyển bot:
-```json
-{
-    "data": {
-        "custom_application_vars": {
-            "referred_callbot": "bot_name_here",
-            "referred_callbot_time": "1720523083000",
-            "referred_callbot_by": "ID_SRC_QUEUE_HERE"
-        }
-    },
-    "module": "set_variables",
-    "children": {
-        "_": {FLOW_TO_CALLBOT_HERE}
-    }
-}
-```
-
-Bot chuyển cuộc gọi lại tới một nhóm queue (ví dụ 20000, qua api hoặc sip refer), và tại nhóm 20000, cuộc gọi vào một queue của kênh này thì bản tin acdc_stats.call_waiting sẽ có:
-* **Source-Type**: bot_transfer
-* **Callbot**: tên của callbot trước đó
-* **Callbot-By**: id của queue trước khi vào bot
-* **Callbot-Time**: thời gian vào bot trước đó
-
-### Hot transfer
-Để ghi nhận CDR cuộc gọi vào queue (CALL_QUEUE) với hiện trạng là `hot transfer`, trước khi vào queue đích thì set thêm biến `member_flags` để đánh dấu
-```json
-{
-    "data": {
-        "custom_application_vars": {
-            "member_flags": "hot_transfer"
-        }
-    },
-    "module": "set_variables",
-    "children": {
-        "_": {FLOW_TO_QUEUE_HERE}
-    }
-}
-```
-
-* Khi vào queue (cf_acdc_member) thì bản tin acdc_call_stat.waiting sẽ có trường `member_flags`, cần check giá trị của nó liệu có chưa giá trị `hot_transfer` không để ghi nhận
-* Sau khi qua cf_acdc_member thì CCVs của Call sẽ không còn biến `member_flags` nữa, nên sau đó nó có vào queue mới thì cũng không có cờ được đẩy ra (trừ khi được set tiếp)
-* CAVs của call thì vẫn sẽ còn `member_flags`
-
 # CHANNEL API
 
 ## meta listen_on=peer
@@ -302,26 +213,26 @@ curl -v -X POST -H "Content-Type: application/json" -H "X-Auth-Token: {AUTH_TOKE
         "action": "intercept",
         "target_type":"user",
         "target_id": "548806d6bae48e98d3da4167e2c9868e",
-        "unbridged_only": false,
         "intercept_type": "transfer"
     }
 }
 ' http://{SERVER}:8000/v2/accounts/{ACCOUNT_ID}/channels/{UUID}
 ```
 
-Key | Description | Type | Default
---- | --- | --- | ---
-UUID | ID của customer channel cần thực hiện intercept | String |
-target_type | "user" or "device" | String |
-target_id | user id hoặc device id được nhận cuộc gọi | String |
-intercept_type | "transfer" or "intercept", dùng đánh dấu cuộc gọi chuyển đi do cướp hay transfer thông thường| String
+| Key            | Description                                                                                   | Type   | Default |
+| -------------- | --------------------------------------------------------------------------------------------- | ------ | ------- |
+| UUID           | ID của customer channel cần thực hiện intercept                                               | String |         |
+| target_type    | "user" or "device"                                                                            | String |         |
+| target_id      | user id hoặc device id được nhận cuộc gọi                                                     | String |         |
+| intercept_type | "transfer" or "intercept", dùng đánh dấu cuộc gọi chuyển đi do cướp hay transfer thông thường | String |         |
 
-Cuộc gọi của khách hàng đang trong queue, khi bị intercept thì bản tin `processed` có thêm 3 trường `Intercept-*` như dưới:
+Cuộc gọi của khách hàng đang trong queue, khi bị intercept thì bản tin `processed` có thêm các trường `Referred-*` như dưới:
 ```json
 {
-"Intercepted-Type":"intercept",
-"Intercepted-To-User":"548806d6bae48e98d3da4167e2c9868e",
-"Intercepted-To":"1001",
+"Referred-Reason":"transfer", //intercept_type
+"Referred-To":"1001",
+"Referred-To-Agent-ID":"548806d6bae48e98d3da4167e2c9868e",
+"Referred-Initiator": "8b14e6242b49c65f68b85a7f4075a989",
 "Hung-Up-By":"agent",
 "Processed-Timestamp":63888698282,
 "Agent-ID":"8b14e6242b49c65f68b85a7f4075a989",
