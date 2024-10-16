@@ -213,32 +213,24 @@ curl -v -X POST -H "Content-Type: application/json" -H "X-Auth-Token: {AUTH_TOKE
         "action": "intercept",
         "target_type":"user",
         "target_id": "548806d6bae48e98d3da4167e2c9868e",
-        "intercept_type": "transfer"
+        "intercept_type": "agent_transfer",
+        "new_party_custom_application_vars": {
+	        "customer_complain_note": "abc, xyz",
+	        "customer_ticket_id": "id123",
+	        "...", "..."
+        }
     }
 }
 ' http://{SERVER}:8000/v2/accounts/{ACCOUNT_ID}/channels/{UUID}
 ```
 
-| Key            | Description                                                                                   | Type   | Default |
-| -------------- | --------------------------------------------------------------------------------------------- | ------ | ------- |
-| UUID           | ID của customer channel cần thực hiện intercept                                               | String |         |
-| target_type    | "user" or "device"                                                                            | String |         |
-| target_id      | user id hoặc device id được nhận cuộc gọi                                                     | String |         |
-| intercept_type | "transfer" or "intercept", dùng đánh dấu cuộc gọi chuyển đi do cướp hay transfer thông thường | String |         |
-
-Cuộc gọi của khách hàng đang trong queue, khi bị intercept thì bản tin `processed` có thêm các trường `Referred-*` như dưới:
-```json
-{
-"Referred-Reason":"transfer", //intercept_type
-"Referred-To":"1001",
-"Referred-To-Agent-ID":"548806d6bae48e98d3da4167e2c9868e",
-"Referred-Initiator": "8b14e6242b49c65f68b85a7f4075a989",
-"Hung-Up-By":"agent",
-"Processed-Timestamp":63888698282,
-"Agent-ID":"8b14e6242b49c65f68b85a7f4075a989",
-...
-}
-```
+| Key                               | Description                                                                                         | Type   | Default |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- | ------ | ------- |
+| UUID                              | ID của customer channel cần thực hiện intercept                                                     | String |         |
+| target_type                       | "user" or "device"                                                                                  | String |         |
+| target_id                         | user id hoặc device id được nhận cuộc gọi                                                           | String |         |
+| intercept_type                    | "agent_transfer" or "intercept", dùng đánh dấu cuộc gọi chuyển đi do cướp hay transfer thông thường | String |         |
+| new_party_custom_application_vars | các biến set vào channel của new party agent                                                        | object | {}      |
 
 ## Store Recording
 Lấy file ghi âm (khi cuộc gọi đang diễn ra) và lưu vào một http endpoint (url) qua method HTTP PUT

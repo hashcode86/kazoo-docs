@@ -217,7 +217,7 @@ curl --location 'http://{API_SERVER}/v2/accounts/{ACCOUNT_ID}/channels/{CHANNEL_
 		"action": "blind_transfer",
 		"reason": "agent_transfer",
 		"custom_application_vars": {
-			"member_flags" : "transfer_hot",
+			"member_transfer_hot" : "true"
 		}
 	}
 }'
