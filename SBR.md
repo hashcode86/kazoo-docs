@@ -6,7 +6,7 @@
   
   
 * Khách hàng (member_call): Trước khi khách hàng vào queue, có thể set biến để yêu cầu về kỹ năng của agent cần có khi trả lời cuộc gọi  
-  * Mandatory Skills: agent phải có kỹ năng bắt buộc này mới có thể được phân bổ cuộc gọi  
+  * Mandatory Skills: yêu cầu agent phải có kỹ năng bắt buộc này mới có thể được phân bổ cuộc gọi  
   * Optional Skills: agent có thể có hoặc không có kỹ năng này, agent nào có thì tổng điểm kỹ năng sẽ cao hơn do đó khả năng được phân bổ cũng sẽ cao hơn  
 * Queue:  
   * Queue có thể được cấu hình để enable/disable việc chỉ phân bổ cuộc gọi tới agent có kỹ năng phù hợp và ưu tiên agent  
