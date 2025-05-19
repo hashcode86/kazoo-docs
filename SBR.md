@@ -58,8 +58,8 @@ curl -v -X PATCH \-H "Content-Type: application/json" \
   
 | Field   | Type     | Default | Description                                                                                               |
 | ------- | -------- | ------- | --------------------------------------------------------------------------------------------------------- |
-| skills  | Json     | null    | đầu số của nhóm queue chứa queue hiện tại                                                                 |
-| english | String   | null    | mã kỹ năng, ví dụ trên là english, test                                                                   |
+| skills  | Json     | null    | Thuộc tính các kỹ năng của agent                                                                 |
+| english | String   | null    | Mã kỹ năng, ví dụ trên là english, test                                                                   |
 | level   | Interger | 1       | mức độ thành thạo của kỹ năng, cao hơn là thành thạo hơn                                                  |
 | queues  | List     | []      | kỹ năng này là được chỉ định cho queue nào, nếu queues là [] thì kỹ năng này được dùng ở tất cả các queue |
 
